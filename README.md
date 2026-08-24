@@ -174,7 +174,7 @@ This is **not** a web wrapper or browser extension. It is a full desktop applica
 ### Download the Installer
 
 <p>
-    <a href="https://github.com/infovirtuspk-png/Open-Torrent-Client/releases/latest/download/Open%20Torrent%20Client%20Setup%201.0.0.exe">
+    <a href="https://github.com/infovirtuspk-png/Open-Torrent-Client/releases/latest/download/Open.Torrent.Client.Setup.1.0.0.exe">
         <img src="https://img.shields.io/badge/Download%20%26%20Install-Open%20Torrent%20Client-1f6feb?style=for-the-badge&logo=windows&logoColor=white" alt="Download and install Open Torrent Client">
     </a>
 </p>
