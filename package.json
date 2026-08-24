@@ -7,7 +7,7 @@
     "start": "electron .",
     "test": "node tests/run-tests.js",
     "make-ico": "node scripts/make-ico.js",
-    "build:exe": "npm run make-ico && npx electron-builder --win nsis --x64",
+    "build:exe": "npm run make-ico && npx electron-builder --win nsis --x64 --publish never",
     "build:portable": "npm run make-ico && npx electron-builder --win portable --x64"
   },
   "build": {
