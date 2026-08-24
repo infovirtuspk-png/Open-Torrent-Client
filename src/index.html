@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OPEN TORRENT CLIENT</title>
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/terminal.css">
+  <script src="vendor/chart.umd.js"></script>
+  <script src="vendor/lucide.min.js"></script>
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Toolbar -->
+    <header class="app-toolbar">
+      <div class="toolbar-brand">
+        <button class="btn-sidebar-toggle" id="btnSidebarToggle" title="Toggle Sidebar (Ctrl+B)">
+          <i data-lucide="menu"></i>
+        </button>
+        <i data-lucide="download-cloud"></i>
+        <span>OTC</span>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="btn-otc btn-otc-primary" id="btnHeaderAddTorrent" title="Add .torrent File (Ctrl+O)">
+          <i data-lucide="plus"></i> Torrent
+        </button>
+        <button class="btn-otc" id="btnHeaderAddMagnet" title="Add Magnet Link (Ctrl+M)">
+          <i data-lucide="link"></i> Magnet
+        </button>
+        <div class="vr mx-1 text-secondary"></div>
+        <button class="btn-otc" id="btnHeaderStart" title="Start / Resume Selected Torrent">
+          <i data-lucide="play" class="text-success"></i> Start
+        </button>
+        <button class="btn-otc" id="btnHeaderPause" title="Pause Selected Torrent">
+          <i data-lucide="pause" class="text-warning"></i> Pause
+        </button>
+        <button class="btn-otc" id="btnHeaderStop" title="Stop Selected Torrent">
+          <i data-lucide="square" class="text-danger"></i> Stop
+        </button>
+        <button class="btn-otc" id="btnHeaderForceStart" title="Force Start Torrent">
+          <i data-lucide="zap" class="text-warning"></i> Force
+        </button>
+        <div class="vr mx-1 text-secondary"></div>
+        <button class="btn-otc" id="btnHeaderMoveUp" title="Move Up in Queue">
+          <i data-lucide="chevron-up"></i>
+        </button>
+        <button class="btn-otc" id="btnHeaderMoveDown" title="Move Down in Queue">
+          <i data-lucide="chevron-down"></i>
+        </button>
+        <button class="btn-otc btn-otc-danger" id="btnHeaderRemove" title="Remove Torrent">
+          <i data-lucide="trash-2"></i> Remove
+        </button>
+        <div class="vr mx-1 text-secondary"></div>
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" id="globalSearchInput" placeholder="Search torrents... (Ctrl+F)">
+        </div>
+        <button class="btn-otc" id="btnHeaderCmdPalette" title="Command Palette (Ctrl+K)">
+          <i data-lucide="command"></i>
+        </button>
+        <button class="btn-otc" id="btnHeaderTerminal" title="Toggle Terminal View (Ctrl+~)">
+          <i data-lucide="terminal"></i> Terminal
+        </button>
+        <button class="btn-otc" id="btnHeaderSettings" title="Settings (Ctrl+,)">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Body -->
+    <div class="app-body">
+      <!-- Sidebar Navigation -->
+      <aside class="app-sidebar">
+        <div class="nav-section-title">TORRENTS</div>
+        <a class="nav-item active" data-view="torrents" data-filter="all">
+          <div class="nav-item-content">
+            <i data-lucide="layers"></i> All Torrents
+          </div>
+          <span class="nav-badge" id="badgeAll">0</span>
+        </a>
+        <a class="nav-item" data-view="torrents" data-filter="downloading">
+          <div class="nav-item-content">
+            <i data-lucide="arrow-down-circle"></i> Downloading
+          </div>
+          <span class="nav-badge" id="badgeDownloading">0</span>
+        </a>
+        <a class="nav-item" data-view="torrents" data-filter="seeding">
+          <div class="nav-item-content">
+            <i data-lucide="arrow-up-circle"></i> Seeding
+          </div>
+          <span class="nav-badge" id="badgeSeeding">0</span>
+        </a>
+        <a class="nav-item" data-view="torrents" data-filter="completed">
+          <div class="nav-item-content">
+            <i data-lucide="check-circle-2"></i> Completed
+          </div>
+          <span class="nav-badge" id="badgeCompleted">0</span>
+        </a>
+        <a class="nav-item" data-view="torrents" data-filter="paused">
+          <div class="nav-item-content">
+            <i data-lucide="pause-circle"></i> Paused
+          </div>
+          <span class="nav-badge" id="badgePaused">0</span>
+        </a>
+        <a class="nav-item" data-view="torrents" data-filter="queued">
+          <div class="nav-item-content">
+            <i data-lucide="clock"></i> Queued
+          </div>
+          <span class="nav-badge" id="badgeQueued">0</span>
+        </a>
+        <a class="nav-item" data-view="torrents" data-filter="error">
+          <div class="nav-item-content">
+            <i data-lucide="alert-circle"></i> Errors
+          </div>
+          <span class="nav-badge" id="badgeError">0</span>
+        </a>
+
+        <div class="nav-section-title mt-3">TOOLS & ANALYTICS</div>
+        <a class="nav-item" data-view="dashboard">
+          <div class="nav-item-content">
+            <i data-lucide="layout-dashboard"></i> Dashboard
+          </div>
+        </a>
+        <a class="nav-item" data-view="file-manager">
+          <div class="nav-item-content">
+            <i data-lucide="folder"></i> File Manager
+          </div>
+        </a>
+        <a class="nav-item" data-view="history">
+          <div class="nav-item-content">
+            <i data-lucide="history"></i> History
+          </div>
+        </a>
+        <a class="nav-item" data-view="terminal">
+          <div class="nav-item-content">
+            <i data-lucide="terminal"></i> Terminal
+          </div>
+          <span class="nav-badge bg-success text-dark" id="badgeTerminal">LIVE</span>
+        </a>
+        <a class="nav-item" data-view="statistics">
+          <div class="nav-item-content">
+            <i data-lucide="bar-chart-3"></i> Statistics
+          </div>
+        </a>
+        <a class="nav-item" data-view="settings">
+          <div class="nav-item-content">
+            <i data-lucide="settings"></i> Settings
+          </div>
+        </a>
+        <a class="nav-item" data-view="about">
+          <div class="nav-item-content">
+            <i data-lucide="info"></i> About
+          </div>
+        </a>
+      </aside>
+
+      <!-- Content Area -->
+      <main class="app-content">
+        <!-- Terminal View -->
+        <section class="view-panel" id="viewTerminal">
+          <div class="terminal-container">
+            <div class="terminal-header">
+              <div class="terminal-title">
+                <i data-lucide="terminal"></i> OTC BACKGROUND CLI TERMINAL
+                <span class="terminal-bg-badge">
+                  <span class="terminal-pulse-dot"></span>
+                  <span id="terminalBgBadgeText">NON-STOP BACKGROUND WORK ACTIVE</span>
+                </span>
+              </div>
+              <div class="terminal-controls">
+                <select class="terminal-filter-select" id="terminalFilterSelect">
+                  <option value="ALL">All Log Levels</option>
+                  <option value="INFO">INFO</option>
+                  <option value="WARN">WARN</option>
+                  <option value="ERROR">ERROR</option>
+                  <option value="CMD">CMD</option>
+                  <option value="SUCCESS">SUCCESS</option>
+                </select>
+                <button class="terminal-btn" id="btnTerminalAutoScroll">
+                  <i data-lucide="arrow-down"></i> Scroll: ON
+                </button>
+                <button class="terminal-btn" id="btnTerminalClear">
+                  <i data-lucide="trash-2"></i> Clear
+                </button>
+                <button class="terminal-btn" id="btnTerminalExport">
+                  <i data-lucide="download"></i> Export
+                </button>
+              </div>
+            </div>
+            <div class="terminal-viewport" id="terminalViewport"></div>
+            <form class="terminal-input-bar" id="terminalInputForm">
+              <span class="terminal-prompt-symbol">otc-cli&gt;</span>
+              <input type="text" class="terminal-input" id="terminalInput" placeholder="Type command here... ('help' for available commands, 'exec <cmd>' for shell commands)" autocomplete="off" spellcheck="false">
+            </form>
+          </div>
+        </section>
+
+        <!-- Dashboard View -->
+        <section class="view-panel" id="viewDashboard">
+          <h4 class="mb-3 font-weight-bold">System Dashboard</h4>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span>Download Speed</span>
+                <i data-lucide="arrow-down-right"></i>
+              </div>
+              <div class="stat-card-value" id="dashDnSpeed">0 B/s</div>
+              <div class="stat-card-sub">● Live BitTorrent engine</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span>Upload Speed</span>
+                <i data-lucide="arrow-up-right"></i>
+              </div>
+              <div class="stat-card-value" id="dashUpSpeed">0 B/s</div>
+              <div class="stat-card-sub">● Active seeding</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span>Active Downloads</span>
+                <i data-lucide="arrow-down-circle"></i>
+              </div>
+              <div class="stat-card-value" id="dashActiveDn">0</div>
+              <div class="stat-card-sub" id="dashMaxDnSub">Max concurrent: 3</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span>DHT Network</span>
+                <i data-lucide="globe"></i>
+              </div>
+              <div class="stat-card-value" id="dashDhtStatus">Connected</div>
+              <div class="stat-card-sub" id="dashDhtNodes">Nodes: 128</div>
+            </div>
+          </div>
+
+          <div class="card bg-secondary border-secondary p-3 text-light">
+            <h6 class="text-muted mb-2">QUICK ACTIONS</h6>
+            <div class="d-flex gap-2">
+              <button class="btn-otc btn-otc-primary" id="btnDashAddMagnet">Add Magnet Link</button>
+              <button class="btn-otc" id="btnDashAddTorrent">Add .torrent File</button>
+              <button class="btn-otc" id="btnDashPauseAll">Pause All</button>
+              <button class="btn-otc" id="btnDashResumeAll">Resume All</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Torrents List & Inspector View -->
+        <section class="view-panel active" id="viewTorrents">
+          <div class="torrent-split-container">
+            <!-- Torrent Table -->
+            <div class="table-container">
+              <table class="torrent-table" id="torrentTable">
+                <thead>
+                  <tr>
+                    <th data-sort="name">Name</th>
+                    <th data-sort="status">Status</th>
+                    <th data-sort="progress">Progress</th>
+                    <th data-sort="size">Size</th>
+                    <th data-sort="downloadSpeed">Down Speed</th>
+                    <th data-sort="uploadSpeed">Up Speed</th>
+                    <th data-sort="eta">ETA</th>
+                    <th data-sort="seeds">Seeds</th>
+                    <th data-sort="peers">Peers</th>
+                    <th data-sort="ratio">Ratio</th>
+                    <th data-sort="addedAt">Added</th>
+                  </tr>
+                </thead>
+                <tbody id="torrentTableBody">
+                  <!-- Torrent Rows Rendered Dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Details Inspector Panel -->
+            <div class="details-inspector" id="detailsInspector">
+              <div class="inspector-tabs">
+                <button class="tab-btn active" data-tab="tabOverview">Overview</button>
+                <button class="tab-btn" data-tab="tabFiles">Files</button>
+                <button class="tab-btn" data-tab="tabPeers">Peers</button>
+                <button class="tab-btn" data-tab="tabTrackers">Trackers</button>
+                <button class="tab-btn" data-tab="tabPieces">Pieces Map</button>
+                <button class="tab-btn" data-tab="tabSpeed">Speed Graph</button>
+                <button class="tab-btn" data-tab="tabLogs">Logs</button>
+              </div>
+
+              <!-- Tab Contents -->
+              <div class="tab-content active" id="tabOverview">
+                <div class="overview-grid" id="overviewGrid">
+                  <div class="overview-card"><label>Name</label><span id="ovName">No Torrent Selected</span></div>
+                  <div class="overview-card"><label>Info Hash</label><span id="ovHash">-</span></div>
+                  <div class="overview-card"><label>Status</label><span id="ovStatus">-</span></div>
+                  <div class="overview-card"><label>Progress</label><span id="ovProgress">0%</span></div>
+                  <div class="overview-card"><label>Size</label><span id="ovSize">0 B</span></div>
+                  <div class="overview-card"><label>Downloaded</label><span id="ovDownloaded">0 B</span></div>
+                  <div class="overview-card"><label>Uploaded</label><span id="ovUploaded">0 B</span></div>
+                  <div class="overview-card"><label>Download Speed</label><span id="ovDnSpeed" class="text-info">0
+                      B/s</span></div>
+                  <div class="overview-card"><label>Upload Speed</label><span id="ovUpSpeed" class="text-success">0
+                      B/s</span></div>
+                  <div class="overview-card"><label>ETA</label><span id="ovEta">∞</span></div>
+                  <div class="overview-card"><label>Seeds / Peers</label><span id="ovSeedsPeers">0 / 0</span></div>
+                  <div class="overview-card"><label>Share Ratio</label><span id="ovRatio">0.00</span></div>
+                  <div class="overview-card"><label>Pieces</label><span id="ovPieces">0</span></div>
+                  <div class="overview-card"><label>Save Location</label><span id="ovSavePath">-</span></div>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tabFiles">
+                <div class="w-100 table-responsive">
+                  <table class="table table-dark table-hover table-sm">
+                    <thead>
+                      <tr>
+                        <th>File Name</th>
+                        <th>Size</th>
+                        <th>Progress</th>
+                        <th>Priority</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tblFilesBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tabPeers">
+                <div class="w-100 table-responsive">
+                  <table class="table table-dark table-hover table-sm">
+                    <thead>
+                      <tr>
+                        <th>IP Address</th>
+                        <th>Port</th>
+                        <th>Client</th>
+                        <th>Down Rate</th>
+                        <th>Up Rate</th>
+                        <th>Progress</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tblPeersBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tabTrackers">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small">BitTorrent Announce Trackers & HTTP WebSeeds</span>
+                  <div class="d-flex gap-2">
+                    <button class="btn-otc btn-otc-sm" id="btnInspectorAddTracker" title="Add Custom Tracker URL"><i data-lucide="plus-circle"></i> Add Tracker</button>
+                    <button class="btn-otc btn-otc-sm" id="btnInspectorAddWebSeed" title="Add WebSeed Mirror URL"><i data-lucide="globe"></i> Add WebSeed</button>
+                  </div>
+                </div>
+                <div class="w-100 table-responsive">
+                  <table class="table table-dark table-hover table-sm">
+                    <thead>
+                      <tr>
+                        <th>Tracker URL</th>
+                        <th>Status</th>
+                        <th>Seeders</th>
+                        <th>Leechers</th>
+                        <th>Response Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tblTrackersBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tabPieces">
+                <div class="pieces-canvas-container">
+                  <div class="d-flex justify-content-between mb-2 text-muted small">
+                    <span>Piece Verification Grid Map (Real BitTorrent verification blocks)</span>
+                    <span id="piecesStatusText">Completed: 0 / 0</span>
+                  </div>
+                  <canvas id="piecesCanvas"></canvas>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tabSpeed">
+                <div class="w-100 h-100" style="min-height: 180px;">
+                  <canvas id="speedChartCanvas"></canvas>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tabLogs">
+                <textarea class="form-control bg-dark text-light font-monospace small w-100 h-100" id="torrentLogsArea"
+                  readonly></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- File Manager View -->
+        <section class="view-panel" id="viewFileManager">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="m-0 font-weight-bold">Native File Manager</h5>
+            <div class="d-flex gap-2 align-items-center">
+              <span class="text-muted small" id="fmCurrentPath">/</span>
+              <button class="btn-otc" id="btnFmNewFolder"><i data-lucide="folder-plus"></i> New Folder</button>
+              <button class="btn-otc" id="btnFmRefresh"><i data-lucide="refresh-cw"></i> Refresh</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="torrent-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Size</th>
+                  <th>Type</th>
+                  <th>Modified Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="fmTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- History View -->
+        <section class="view-panel" id="viewHistory">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="m-0 font-weight-bold">Download History</h5>
+            <button class="btn-otc btn-otc-danger" id="btnClearHistory">Clear History</button>
+          </div>
+          <div class="table-container">
+            <table class="torrent-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Size</th>
+                  <th>Downloaded</th>
+                  <th>Uploaded</th>
+                  <th>Ratio</th>
+                  <th>Completed Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tblHistoryBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Statistics View -->
+        <section class="view-panel" id="viewStatistics">
+          <h5 class="mb-3 font-weight-bold">Analytics & Lifetime Statistics</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="stat-card">
+                <div class="stat-card-header">Total Downloaded</div>
+                <div class="stat-card-value" id="statLifetimeDn">0 B</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="stat-card">
+                <div class="stat-card-header">Total Uploaded</div>
+                <div class="stat-card-value" id="statLifetimeUp">0 B</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="stat-card">
+                <div class="stat-card-header">Active Days</div>
+                <div class="stat-card-value" id="statActiveDays">1</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings View -->
+        <section class="view-panel" id="viewSettings">
+          <div class="settings-wrapper">
+            <!-- Modern Settings Header & Sub-Nav -->
+            <div class="settings-header">
+              <div class="settings-title-group">
+                <div class="settings-title-icon">
+                  <i data-lucide="settings" style="width:22px;height:22px;"></i>
+                </div>
+                <div>
+                  <h5 class="mb-0 font-weight-bold text-white">Application Settings</h5>
+                  <span class="text-muted small">Customize client preferences, bandwidth limits &amp; integrations</span>
+                </div>
+              </div>
+              <!-- Tabbed Sub-Navigation -->
+              <div class="settings-nav-tabs">
+                <button type="button" class="settings-tab-btn active" data-settings-tab="tabGeneral">
+                  <i data-lucide="monitor" style="width:15px;height:15px;"></i> General &amp; Tray
+                </button>
+                <button type="button" class="settings-tab-btn" data-settings-tab="tabBandwidth">
+                  <i data-lucide="activity" style="width:15px;height:15px;"></i> Bandwidth &amp; Network
+                </button>
+                <button type="button" class="settings-tab-btn" data-settings-tab="tabNotifications">
+                  <i data-lucide="bell" style="width:15px;height:15px;"></i> Notifications &amp; Power
+                </button>
+                <button type="button" class="settings-tab-btn" data-settings-tab="tabIntegration">
+                  <i data-lucide="link" style="width:15px;height:15px;"></i> Integration &amp; Protocols
+                </button>
+              </div>
+            </div>
+
+            <!-- Form & Tab Contents Container -->
+            <form id="settingsForm" class="d-flex flex-column flex-grow-1 overflow-hidden">
+              <div class="settings-tab-content">
+
+                <!-- Tab 1: General & Tray -->
+                <div class="settings-tab-pane active" id="tabGeneral">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <!-- System Tray Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="monitor" style="width:18px;height:18px;"></i> System Tray &amp; Window
+                          </h6>
+                          <span class="badge px-2 py-1" style="background:rgba(16,185,129,0.2);color:#10b981;">● Tray Active</span>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Minimize to system tray</span>
+                            <span class="settings-row-desc">Hide application window to system tray when minimized</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setMinimizeToTray">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Close button minimizes to tray</span>
+                            <span class="settings-row-desc">Keep background downloads active when clicking close [X]</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setCloseToTray">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Show "still running in tray" notification</span>
+                            <span class="settings-row-desc">Display a toast message when app is minimized to system tray</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setShowCloseToTrayNotif">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Detect magnet links from clipboard</span>
+                            <span class="settings-row-desc">Automatically prompt when a magnet URL is copied to clipboard</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setDetectClipboard">
+                          </div>
+                        </div>
+                        <div class="mt-3 pt-2 border-top border-secondary d-flex align-items-center justify-content-between">
+                          <div>
+                            <label class="form-label small mb-1 fw-bold text-light">Theme Appearance</label>
+                            <select class="form-select bg-dark text-light border-secondary form-select-sm" id="setTheme" style="width:160px;">
+                              <option value="dark">Dark Theme (Default)</option>
+                              <option value="light">Light Theme</option>
+                            </select>
+                          </div>
+                          <button type="button" class="btn-otc btn-otc-sm mt-3" id="btnOpenDownloadsFolder">
+                            <i data-lucide="folder-open" style="width:14px;height:14px;"></i> Downloads Directory
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <!-- Startup Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="power" style="width:18px;height:18px;"></i> Startup &amp; Recovery
+                          </h6>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Start with Windows</span>
+                            <span class="settings-row-desc">Launch Open Torrent Client on system boot</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setStartWithWindows">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Start minimized to tray</span>
+                            <span class="settings-row-desc">Launch directly in system tray without opening window</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setStartMinimized">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Start directly in system tray</span>
+                            <span class="settings-row-desc">Run in silent background mode on startup</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setStartInTray">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Restore torrent states on startup</span>
+                            <span class="settings-row-desc">Automatically resume previous download queues and seeding tasks</span>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="setRestoreStates">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 2: Bandwidth & Network -->
+                <div class="settings-tab-pane" id="tabBandwidth">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <!-- Bandwidth Limits Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="activity" style="width:18px;height:18px;"></i> Speed &amp; Rate Controls
+                          </h6>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label small fw-bold text-light">Max Download Speed (KB/s)</label>
+                          <div class="input-group input-group-sm">
+                            <input type="number" class="form-input w-100" id="setGlobalDnLimit" value="0" min="0">
+                          </div>
+                          <span class="text-muted micro-text">Set 0 for unlimited speed.</span>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label small fw-bold text-light">Max Upload Speed (KB/s)</label>
+                          <div class="input-group input-group-sm">
+                            <input type="number" class="form-input w-100" id="setGlobalUpLimit" value="0" min="0">
+                          </div>
+                          <span class="text-muted micro-text">Set 0 for unlimited speed.</span>
+                        </div>
+                        <div class="mb-2">
+                          <label class="form-label small fw-bold text-light">Max Concurrent Active Downloads</label>
+                          <div class="input-group input-group-sm">
+                            <input type="number" class="form-input w-100" id="setMaxActiveDn" value="3" min="1" max="20">
+                          </div>
+                          <span class="text-muted micro-text">Queue manager pauses downloads exceeding this limit.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <!-- Network Diagnostics Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="wifi" style="width:18px;height:18px;"></i> Port &amp; Connectivity Diagnostic
+                          </h6>
+                        </div>
+                        <p class="text-muted small mb-3">
+                          Test listening BitTorrent TCP/UDP ports, active local network interfaces, and DHT tracker reachability.
+                        </p>
+                        <button type="button" class="btn-otc btn-otc-primary w-100 py-2" id="btnTestNetworkConnectivity">
+                          <i data-lucide="wifi" style="width:16px;height:16px;"></i> Test Network &amp; Port Connectivity
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 3: Notifications & Power -->
+                <div class="settings-tab-pane" id="tabNotifications">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <!-- Notifications Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="bell" style="width:18px;height:18px;"></i> Windows Desktop Notifications
+                          </h6>
+                          <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" id="setEnableNotifications">
+                          </div>
+                        </div>
+                        <div class="settings-row">
+                          <span class="settings-row-label">Torrent Added</span>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifAdded"></div>
+                        </div>
+                        <div class="settings-row">
+                          <span class="settings-row-label">Download Completed</span>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifComplete"></div>
+                        </div>
+                        <div class="settings-row">
+                          <span class="settings-row-label">Torrent Errors</span>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifError"></div>
+                        </div>
+                        <div class="settings-row">
+                          <span class="settings-row-label">Metadata Received</span>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifMeta"></div>
+                        </div>
+                        <div class="settings-row">
+                          <span class="settings-row-label">Tracker Connection Errors</span>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifTracker"></div>
+                        </div>
+                        <div class="settings-row">
+                          <span class="settings-row-label">Seeding Started</span>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifSeeding"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <!-- Power & Management Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="battery" style="width:18px;height:18px;"></i> Power &amp; Network Management
+                          </h6>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Prevent system sleep while downloading</span>
+                            <span class="settings-row-desc">Acquire Windows power save blocker during active transfers</span>
+                          </div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setPrevSleepDn"></div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Prevent system sleep while seeding</span>
+                            <span class="settings-row-desc">Keep computer awake when actively seeding completed torrents</span>
+                          </div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setPrevSleepSeed"></div>
+                        </div>
+                        <div class="settings-row">
+                          <div class="settings-row-info">
+                            <span class="settings-row-label">Pause downloads on metered connections</span>
+                            <span class="settings-row-desc">Prevent data overage charges on cellular or limited networks</span>
+                          </div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setPauseMetered"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 4: Integration & Protocols -->
+                <div class="settings-tab-pane" id="tabIntegration">
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <!-- Browser & Magnet Integration Card -->
+                      <div class="settings-card">
+                        <div class="settings-card-header">
+                          <h6 class="settings-card-title">
+                            <i data-lucide="link" style="width:18px;height:18px;"></i> Browser &amp; Windows Protocol Integration
+                          </h6>
+                          <span id="badgeMagnetRegStatus" class="badge bg-success px-3 py-1">● Magnet: Registered</span>
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                          <div class="col-md-4">
+                            <div class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
+                              <span class="text-muted">Windows Protocol (`magnet:`):</span>
+                              <strong id="statusMagnetProtoText" class="text-success fs-6">Active (HKCU)</strong>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
+                              <span class="text-muted">File Association (`.torrent`):</span>
+                              <strong id="statusTorrentAssocText" class="text-success fs-6">Active (HKCU)</strong>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
+                              <span class="text-muted">Single Instance Service:</span>
+                              <strong class="text-info fs-6">Active (IPC Lock)</strong>
+                            </div>
+                          </div>
+                        </div>
+
+                        <label class="form-label small fw-bold text-light mb-2">Magnet Link Capture Behavior Mode</label>
+                        <div class="d-flex flex-column gap-2 mb-3">
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAsk" value="ask">
+                            <label class="form-check-label small" for="modeAsk">
+                              <strong>Mode A &mdash; Ask Before Adding</strong> <span class="text-muted">(Shows preview dialog with file tree)</span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAuto" value="auto">
+                            <label class="form-check-label small" for="modeAuto">
+                              <strong>Mode B &mdash; Auto Add</strong> <span class="text-muted">(Starts transfer silently in background)</span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAskNew" value="ask_new">
+                            <label class="form-check-label small" for="modeAskNew">
+                              <strong>Mode C &mdash; Ask Only for New Torrents</strong>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 pt-2 border-top border-secondary">
+                          <button type="button" class="btn-otc" id="btnTestIntegration">
+                            <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Test Magnet Handler
+                          </button>
+                          <button type="button" class="btn-otc" id="btnRegisterAssociations">
+                            <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Re-register Associations
+                          </button>
+                          <button type="button" class="btn-otc btn-otc-danger" id="btnUnregisterAssociations">
+                            <i data-lucide="x-circle" style="width:14px;height:14px;"></i> Reset Protocol Handler
+                          </button>
+                        </div>
+                        <div id="integrationTestReport" class="mt-3 p-3 bg-dark rounded small text-info border border-secondary" style="display:none;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Footer Sticky Actions Bar -->
+              <div class="settings-footer-actions">
+                <button type="submit" class="btn-otc btn-otc-primary px-4 py-2 fw-bold">
+                  <i data-lucide="save" style="width:16px;height:16px;"></i> Save Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+
+
+        <!-- About View -->
+        <section class="view-panel" id="viewAbout">
+          <div style="overflow-y: auto; height: calc(100vh - 120px);" class="pe-2">
+
+            <!-- Hero Showcase Card -->
+            <div class="about-hero-card text-center mb-4">
+              <div class="about-logo-badge mx-auto mb-3">
+                <i data-lucide="download-cloud" style="width: 44px; height: 44px; color: #fff;"></i>
+              </div>
+              <h2 class="font-weight-bold text-white mb-1">Open Torrent Client</h2>
+              <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                <span class="badge bg-primary px-3 py-1 rounded-pill">v1.0.0 Pro Edition</span>
+                <span class="badge bg-success px-3 py-1 rounded-pill">● Production Release</span>
+              </div>
+              <p class="text-secondary mx-auto" style="max-width: 620px; font-size: 0.92rem;">
+                Standalone Windows BitTorrent Desktop Client featuring real WebTorrent engine integration, Magnet Link capture, SQLite database persistence, live 7-tab inspector, and zero fake statistics.
+              </p>
+
+              <!-- Action Buttons -->
+              <div class="d-flex align-items-center justify-content-center gap-3 mt-4">
+                <button class="btn-otc btn-otc-primary px-4 py-2" id="btnCheckUpdates">
+                  <i data-lucide="refresh-cw" style="width:15px;height:15px;"></i> Check for Updates
+                </button>
+                <button class="btn-otc px-4 py-2" id="btnExportDiagnostics">
+                  <i data-lucide="activity" style="width:15px;height:15px;" class="text-info"></i> System Diagnostics
+                </button>
+              </div>
+
+              <!-- Tech Stack Badges -->
+              <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-4 pt-3 border-top border-secondary">
+                <span class="tech-badge"><i data-lucide="cpu" style="width:13px;height:13px;" class="text-info"></i> Electron 28</span>
+                <span class="tech-badge"><i data-lucide="zap" style="width:13px;height:13px;" class="text-warning"></i> WebTorrent Engine</span>
+                <span class="tech-badge"><i data-lucide="database" style="width:13px;height:13px;" class="text-success"></i> SQLite 3 WAL</span>
+                <span class="tech-badge"><i data-lucide="globe" style="width:13px;height:13px;" class="text-info"></i> DHT + PEX Network</span>
+                <span class="tech-badge"><i data-lucide="shield-check" style="width:13px;height:13px;" class="text-success"></i> Windows Protocol Integration</span>
+              </div>
+            </div>
+
+            <!-- Developer Information Card -->
+            <div class="developer-card card p-4 mb-4">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="developer-avatar-badge">
+                    <i data-lucide="user-check" style="width: 28px; height: 28px; color: var(--accent);"></i>
+                  </div>
+                  <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <h5 class="font-weight-bold text-white mb-0">Engineer Qasim Ahmad</h5>
+                      <span class="badge bg-info text-dark px-2 py-1 small font-weight-bold">Lead Developer &amp; Architect</span>
+                    </div>
+                    <p class="text-secondary small mb-0 mt-1">
+                      <i data-lucide="code-2" style="width:14px;height:14px;" class="me-1 text-info"></i> Software Engineer &bull; Desktop Application Systems
+                    </p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <a href="mailto:engineerqasimahmad@gmail.com" class="btn-otc btn-otc-primary px-3 py-2 text-decoration-none">
+                    <i data-lucide="mail" style="width:15px;height:15px;" class="me-1"></i> engineerqasimahmad@gmail.com
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <div class="about-feature-card">
+                  <div class="d-flex align-items-center gap-2 mb-2 text-info">
+                    <i data-lucide="activity" style="width:20px;height:20px;"></i>
+                    <strong style="font-size: 0.95rem;">Realtime Bitfield Inspector</strong>
+                  </div>
+                  <p class="text-secondary small mb-0">Live canvas piece visualization mapping completed, downloading, and missing piece blocks directly from wire streams.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="about-feature-card">
+                  <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                    <i data-lucide="link" style="width:20px;height:20px;"></i>
+                    <strong style="font-size: 0.95rem;">Magnet Protocol Capture</strong>
+                  </div>
+                  <p class="text-secondary small mb-0">Automatic Windows `magnet:` protocol registration, single-instance argument lock, and clipboard watcher.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="about-feature-card">
+                  <div class="d-flex align-items-center gap-2 mb-2 text-success">
+                    <i data-lucide="monitor" style="width:20px;height:20px;"></i>
+                    <strong style="font-size: 0.95rem;">System Tray Engine</strong>
+                  </div>
+                  <p class="text-secondary small mb-0">State-aware notification area tray icons, minimize-to-tray, close-to-tray, and native OS notifications.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="about-feature-card">
+                  <div class="d-flex align-items-center gap-2 mb-2 text-primary">
+                    <i data-lucide="sliders" style="width:20px;height:20px;"></i>
+                    <strong style="font-size: 0.95rem;">Queue &amp; Bandwidth Rules</strong>
+                  </div>
+                  <p class="text-secondary small mb-0">Per-torrent download/upload speed limits, file priority controls, and daily usage statistics logging.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="about-feature-card">
+                  <div class="d-flex align-items-center gap-2 mb-2 text-danger">
+                    <i data-lucide="shield" style="width:20px;height:20px;"></i>
+                    <strong style="font-size: 0.95rem;">Filesystem Protection</strong>
+                  </div>
+                  <p class="text-secondary small mb-0">Path traversal guards, auto folder creation, and safe multi-file deletion confirmation dialogs.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="about-feature-card">
+                  <div class="d-flex align-items-center gap-2 mb-2 text-info">
+                    <i data-lucide="rotate-ccw" style="width:20px;height:20px;"></i>
+                    <strong style="font-size: 0.95rem;">Auto Resume &amp; Recovery</strong>
+                  </div>
+                  <p class="text-secondary small mb-0">Automatic session restoration on startup and transaction-safe SQLite database crash protection.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- System Information & License -->
+            <div class="card bg-secondary border-secondary p-3 text-center text-muted small mb-3">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <span>© 2026 Open Torrent Client Project. Developed by <strong>Engineer Qasim Ahmad</strong> (&lt;engineerqasimahmad@gmail.com&gt;). Released under MIT License.</span>
+                <span>BitTorrent &amp; Magnet Specification Compliant</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Statusbar -->
+    <footer class="app-statusbar">
+      <div class="statusbar-left">
+        <span><i data-lucide="arrow-down" style="width:12px;height:12px;"></i> <strong id="statusDnSpeed">0
+            B/s</strong></span>
+        <span><i data-lucide="arrow-up" style="width:12px;height:12px;"></i> <strong id="statusUpSpeed">0
+            B/s</strong></span>
+        <span>Peers: <strong id="statusPeers">0</strong></span>
+        <span>Active: <strong id="statusActiveCount">0</strong></span>
+        <span class="text-info"><i data-lucide="link" style="width:12px;height:12px;"></i> Magnet Handler: <strong
+            id="statusIntegration">Active</strong></span>
+      </div>
+
+      <div class="statusbar-right">
+        <span>DHT: <strong id="statusDht">Connected</strong></span>
+        <span>Port: <strong id="statusPort">6881</strong></span>
+        <span><span class="status-dot"></span> Online</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Drag & Drop Overlay -->
+  <div id="dragDropOverlay" class="drag-drop-overlay" style="display: none;">
+    <div class="drag-drop-card text-center p-4">
+      <i data-lucide="file-up" style="width: 56px; height: 56px; color: var(--accent);"></i>
+      <h4 class="mt-3 font-weight-bold text-white">Drop .torrent File Here</h4>
+      <p class="text-secondary mb-0">Release to add torrent to Open Torrent Client queue</p>
+    </div>
+  </div>
+
+  <!-- Magnet Preview Dialog Modal -->
+  <div class="modal-overlay" id="modalAddMagnet">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header d-flex justify-content-between align-items-center">
+        <span class="d-flex align-items-center gap-2 font-weight-bold">
+          <i data-lucide="link" class="text-info" style="width: 18px; height: 18px;"></i> Magnet Link Preview
+        </span>
+        <button class="btn-close btn-close-white" id="btnCloseAddMagnetModal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Torrent Name Showcase -->
+        <div class="p-3 bg-secondary rounded mb-3 border border-secondary">
+          <label class="text-muted small text-uppercase font-weight-bold mb-1">Torrent Display Name</label>
+          <div class="h6 font-weight-bold text-white mb-1" id="previewMagnetName">Ubuntu 24.04 Desktop</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted small">Info Hash: <strong id="previewMagnetHash" class="text-info font-monospace">abcd1234...</strong></span>
+            <span class="badge bg-dark text-info px-2 py-1" id="previewMagnetTrackers">Trackers: 4</span>
+          </div>
+        </div>
+
+        <!-- Metadata Progress Steps -->
+        <div class="mb-3 p-2 bg-dark rounded border border-secondary" id="previewMetadataProgressBox">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small font-weight-bold text-light">Metadata Retrieval State</span>
+            <span class="badge bg-primary px-2" id="previewMetadataBadge">Fetching metadata...</span>
+          </div>
+          <div class="d-flex justify-content-between text-muted small px-1">
+            <span id="stepConn">● Connecting</span>
+            <span id="stepPeers">● Finding peers</span>
+            <span id="stepReq">● Requesting</span>
+            <span id="stepDone">● Ready</span>
+          </div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="form-group mb-3">
+          <label class="form-label small">Magnet URI</label>
+          <textarea class="form-input font-monospace small" id="inputMagnetUri" rows="2" placeholder="magnet:?xt=urn:btih:..."></textarea>
+        </div>
+
+        <div class="form-group mb-2">
+          <label class="form-label small">Download Location</label>
+          <div class="d-flex gap-2">
+            <input type="text" class="form-input flex-grow-1" id="inputMagnetSavePath">
+            <button class="btn-otc" id="btnBrowseMagnetSavePath">Browse</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-otc" id="btnCancelAddMagnet">Cancel</button>
+        <button class="btn-otc btn-otc-primary" id="btnSubmitAddMagnet">
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i> Add Torrent
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Duplicate Torrent Warning Modal -->
+  <div class="modal-overlay" id="modalDuplicateTorrent">
+    <div class="modal-card">
+      <div class="modal-header bg-warning text-dark">
+        <span class="font-weight-bold"><i data-lucide="alert-triangle"></i> Torrent Already Exists</span>
+        <button class="btn-close" id="btnCloseDupModal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="m-0 font-weight-bold" id="dupTorrentName">Torrent Name</p>
+        <p class="text-muted small mb-2" id="dupTorrentHash">Info Hash: -</p>
+        <div class="p-2 bg-dark rounded border border-secondary text-light small">
+          Status: <strong class="text-info" id="dupTorrentStatus">Downloading</strong>
+        </div>
+        <p class="text-secondary small mt-2 mb-0">This torrent is already in your library. What would you like to do?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-otc" id="btnDupCancel">Cancel</button>
+        <button class="btn-otc" id="btnDupAddAnyway">Add Anyway</button>
+        <button class="btn-otc btn-otc-primary" id="btnDupOpen">Open Torrent</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Palette Modal -->
+  <div class="cmd-palette-overlay" id="cmdPaletteOverlay">
+    <div class="cmd-palette-card">
+      <input type="text" class="cmd-input" id="cmdPaletteInput"
+        placeholder="Search commands or torrents... (Esc to exit)">
+      <div class="cmd-list" id="cmdPaletteList">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Clipboard Toast Detector Notification -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 3000;">
+    <div id="magnetToast" class="toast bg-dark text-light border-info" role="alert" aria-live="assertive"
+      aria-atomic="true">
+      <div class="toast-header bg-secondary text-info">
+        <strong class="me-auto"><i data-lucide="link"></i> Magnet Link Detected</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        A magnet link was copied to your clipboard. Add it now?
+        <div class="mt-2 pt-2 border-top border-secondary d-flex gap-2">
+          <button type="button" class="btn btn-info btn-sm" id="btnToastAddMagnet">Add Magnet</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Ignore</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" type="module"></script>
+</body>
+
+</html>

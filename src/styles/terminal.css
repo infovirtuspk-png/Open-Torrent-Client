@@ -1,0 +1,192 @@
+/* Integrated Background Terminal Stylesheet */
+
+.terminal-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 110px);
+  background-color: #0b0f19;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  overflow: hidden;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+  border-bottom: 1px solid #334155;
+  user-select: none;
+}
+
+.terminal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.5px;
+}
+
+.terminal-bg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.terminal-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.terminal-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-btn {
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #475569;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.terminal-btn:hover {
+  background: #334155;
+  color: #f8fafc;
+  border-color: #38bdf8;
+}
+
+.terminal-filter-select {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  outline: none;
+}
+
+.terminal-viewport {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  background-color: #030712;
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.terminal-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+.terminal-viewport::-webkit-scrollbar-track {
+  background: #090d16;
+}
+.terminal-viewport::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+.terminal-viewport::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+.terminal-line {
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.terminal-timestamp {
+  color: #64748b;
+  font-size: 11px;
+  user-select: none;
+  min-width: 65px;
+}
+
+.terminal-badge {
+  font-weight: 700;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  user-select: none;
+}
+
+.badge-info { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+.badge-warn { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+.badge-error { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.4); }
+.badge-cmd { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+.badge-success { background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
+
+.terminal-text {
+  flex: 1;
+}
+
+.text-output { color: #cbd5e1; }
+.text-cmd { color: #a78bfa; font-weight: 600; }
+.text-info { color: #38bdf8; }
+.text-warn { color: #fbbf24; }
+.text-error { color: #f87171; }
+.text-success { color: #34d399; }
+
+.terminal-input-bar {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #0f172a;
+  border-top: 1px solid #1e293b;
+}
+
+.terminal-prompt-symbol {
+  color: #34d399;
+  font-weight: 800;
+  margin-right: 8px;
+  user-select: none;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.terminal-input::placeholder {
+  color: #475569;
+}

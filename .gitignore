@@ -1,0 +1,18 @@
+node_modules/
+dist/
+
+# Local application data and generated database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs and local environment files
+*.log
+.env
+.env.*
+!.env.example
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/

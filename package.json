@@ -1,0 +1,108 @@
+{
+  "name": "open-torrent-client",
+  "version": "1.0.0",
+  "description": "10X Complete Production-Level Desktop Torrent Client",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node tests/run-tests.js",
+    "make-ico": "node scripts/make-ico.js",
+    "build:exe": "npm run make-ico && npx electron-builder --win nsis --x64",
+    "build:portable": "npm run make-ico && npx electron-builder --win portable --x64"
+  },
+  "build": {
+    "appId": "com.opentorrentclient.app",
+    "productName": "Open Torrent Client",
+    "npmRebuild": false,
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/sql.js/dist/**",
+      "node_modules/webtorrent/**",
+      "node_modules/parse-torrent/**",
+      "node_modules/magnet-uri/**",
+      "node_modules/create-torrent/**",
+      "node_modules/bittorrent-dht/**",
+      "node_modules/bittorrent-tracker/**",
+      "node_modules/ut_metadata/**",
+      "node_modules/ut_pex/**",
+      "node_modules/torrent-discovery/**",
+      "node_modules/simple-peer/**",
+      "assets/**"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "backend/**/*",
+      "database/**/*",
+      "src/**/*",
+      "assets/**/*",
+      "scripts/**/*",
+      "package.json",
+      "node_modules/**/*",
+      "!node_modules/**/*.md",
+      "!node_modules/**/*.markdown",
+      "!node_modules/**/*.ts",
+      "!node_modules/**/*.map",
+      "!node_modules/**/test/**",
+      "!node_modules/**/tests/**",
+      "!node_modules/**/__tests__/**",
+      "!node_modules/**/spec/**",
+      "!node_modules/**/example/**",
+      "!node_modules/**/examples/**",
+      "!node_modules/**/docs/**",
+      "!node_modules/**/doc/**",
+      "!node_modules/**/.git/**",
+      "!node_modules/**/CHANGELOG*",
+      "!node_modules/**/CHANGES*",
+      "!node_modules/**/HISTORY*",
+      "!node_modules/**/CONTRIBUTING*",
+      "!node_modules/**/AUTHORS*",
+      "!dist/**",
+      "!tests/**",
+      "!Prompt.txt"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Open Torrent Client",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "deleteAppDataOnUninstall": false
+    },
+    "extraResources": [
+      {
+        "from": "node_modules/sql.js/dist/sql-wasm.wasm",
+        "to": "sql-wasm.wasm"
+      }
+    ]
+  },
+  "keywords": ["bittorrent", "torrent", "magnet", "client", "electron", "desktop"],
+  "author": "Engineer Qasim Ahmad <engineerqasimahmad@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "magnet-uri": "^7.0.5",
+    "parse-torrent": "^11.0.16",
+    "sql.js": "^1.12.0",
+    "webtorrent": "^2.6.0"
+  },
+  "devDependencies": {
+    "electron": "^34.3.0",
+    "electron-builder": "^25.1.8"
+  }
+}
