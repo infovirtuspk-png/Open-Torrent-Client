@@ -1,0 +1,35 @@
+name: Build Windows Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows installer
+        run: npm run build:exe
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create $env:GITHUB_REF_NAME 'dist/Open Torrent Client Setup 1.0.0.exe' --repo $env:GITHUB_REPOSITORY --title "Open Torrent Client $env:GITHUB_REF_NAME" --generate-notes
