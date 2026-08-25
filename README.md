@@ -59,6 +59,23 @@ This is **not** a web wrapper or browser extension. It is a full desktop applica
 - **Background operation** — downloads continue even when minimized to tray
 - **Realtime telemetry** — live CPU, RAM, Disk I/O, Network, GPU & torrent metrics
 
+## Screenshots
+
+<div align="center">
+    <img src="media/screenshots/dashboard-desktop.png" alt="Open Torrent Client desktop dashboard" width="900">
+    <br><br>
+    <img src="media/screenshots/statistics-desktop.png" alt="Open Torrent Client statistics dashboard" width="900">
+    <br><br>
+    <img src="media/screenshots/terminal-desktop.png" alt="Open Torrent Client terminal view" width="900">
+    <br><br>
+    <img src="media/screenshots/dashboard-mobile.png" alt="Open Torrent Client responsive dashboard" width="360">
+</div>
+
+App icon files are available in [`media/`](media/) for packaging, branding, and distribution:
+
+- [`Open-Torrent-Client-icon.png`](media/Open-Torrent-Client-icon.png)
+- [`Open-Torrent-Client-icon.ico`](media/Open-Torrent-Client-icon.ico)
+
 ---
 
 ## Features
