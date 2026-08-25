@@ -53,8 +53,10 @@ function writePNG(filePath, width, height, pixelsFn) {
   fs.writeFileSync(filePath, Buffer.concat(parts));
 }
 
-const outPath = path.join(__dirname, '..', 'assets', 'icon.png');
-const size = 256;
+const requestedSize = Number.parseInt(process.argv[2] || '256', 10);
+const size = Number.isFinite(requestedSize) && requestedSize > 0 ? requestedSize : 256;
+const outputName = process.argv[3] || (size === 256 ? 'icon.png' : `icon-${size}x${size}.png`);
+const outPath = path.join(__dirname, '..', 'assets', outputName);
 
 writePNG(outPath, size, size, (x, y, w, h) => {
   const cx = w / 2;
@@ -111,4 +113,4 @@ writePNG(outPath, size, size, (x, y, w, h) => {
   return [r, g, b, a];
 });
 
-console.log('✓ High-res application icon generated at assets/icon.png');
+console.log(`✓ Application icon generated at assets/${outputName} (${size}x${size})`);
