@@ -32,6 +32,7 @@ contextBridge.exposeInMainWorld('api', {
   // ── Settings & DB ────────────────────────────────────────────────────────────
   getSettings:         ()           => ipcRenderer.invoke('settings:get'),
   saveSettings:        (s)          => ipcRenderer.invoke('settings:save', s),
+  getLifetimeStats:    ()           => ipcRenderer.invoke('stats:getLifetime'),
   getHistory:          ()           => ipcRenderer.invoke('history:get'),
   clearHistory:        ()           => ipcRenderer.invoke('history:clear'),
   getCategories:       ()           => ipcRenderer.invoke('categories:get'),

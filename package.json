@@ -1,6 +1,6 @@
 {
   "name": "open-torrent-client",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "10X Complete Production-Level Desktop Torrent Client",
   "main": "main.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "build": {
     "appId": "com.opentorrentclient.app",
     "productName": "Open Torrent Client",
+    "copyright": "Copyright © 2026 Engineer Qasim Ahmad",
     "npmRebuild": false,
     "asar": true,
     "asarUnpack": [
@@ -67,7 +68,12 @@
     ],
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "icon": "assets/icon.ico",
       "requestedExecutionLevel": "asInvoker"
@@ -92,7 +98,14 @@
       }
     ]
   },
-  "keywords": ["bittorrent", "torrent", "magnet", "client", "electron", "desktop"],
+  "keywords": [
+    "bittorrent",
+    "torrent",
+    "magnet",
+    "client",
+    "electron",
+    "desktop"
+  ],
   "author": "Engineer Qasim Ahmad <engineerqasimahmad@gmail.com>",
   "license": "MIT",
   "dependencies": {

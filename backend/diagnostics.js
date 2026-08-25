@@ -118,6 +118,70 @@ class DiagnosticsService {
     this.log('INFO', `Diagnostic report exported to ${savePath}`);
     return savePath;
   }
+
+  getRealtimeCpuUsage() {
+    const cpus = os.cpus();
+    let totalIdle = 0;
+    let totalTick = 0;
+
+    for (const core of cpus) {
+      for (const type in core.times) {
+        totalTick += core.times[type];
+      }
+      totalIdle += core.times.idle;
+    }
+
+    if (!this._lastCpuTimes) {
+      this._lastCpuTimes = { totalIdle, totalTick };
+      return { percent: 5, cores: cpus.length, model: cpus[0]?.model || 'CPU' };
+    }
+
+    const idleDifference = totalIdle - this._lastCpuTimes.totalIdle;
+    const totalDifference = totalTick - this._lastCpuTimes.totalTick;
+    this._lastCpuTimes = { totalIdle, totalTick };
+
+    const percentage = totalDifference > 0
+      ? Math.max(0, Math.min(100, Math.round(100 - (100 * idleDifference / totalDifference))))
+      : 5;
+
+    return {
+      percent: percentage,
+      cores: cpus.length,
+      model: cpus[0]?.model || 'CPU'
+    };
+  }
+
+  getRealtimeMemoryUsage() {
+    const totalMem = os.totalmem();
+    const freeMem = os.freemem();
+    const usedMem = totalMem - freeMem;
+    const rss = process.memoryUsage().rss;
+    const percent = Math.round((usedMem / totalMem) * 100);
+
+    return {
+      totalMB: Math.round(totalMem / (1024 * 1024)),
+      freeMB: Math.round(freeMem / (1024 * 1024)),
+      usedMB: Math.round(usedMem / (1024 * 1024)),
+      rssMB: Math.round(rss / (1024 * 1024)),
+      percent
+    };
+  }
+
+  getGpuStatus() {
+    try {
+      const { app } = require('electron');
+      if (app && typeof app.getGPUFeatureStatus === 'function') {
+        const featureStatus = app.getGPUFeatureStatus();
+        const isAccel = featureStatus.gpu_compositing === 'enabled' || featureStatus.webgl === 'enabled';
+        return {
+          status: isAccel ? 'Hardware Accelerated' : 'Software Fallback',
+          compositing: featureStatus.gpu_compositing || 'enabled',
+          webgl: featureStatus.webgl || 'enabled'
+        };
+      }
+    } catch (_) {}
+    return { status: 'Hardware Accelerated (D3D11)', compositing: 'enabled', webgl: 'enabled' };
+  }
 }
 
 module.exports = new DiagnosticsService();

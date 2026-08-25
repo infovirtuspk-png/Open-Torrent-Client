@@ -94,12 +94,24 @@ function handleLaunchArgs(argv) {
 function captureAndForward(magnetUrl) {
   capture.handleIncomingMagnet(magnetUrl, (channel, data) => {
     if (mainWindow && !mainWindow.isDestroyed()) {
+      if (!mainWindow.isVisible()) {
+        const mode = db.getSetting('captureMode', 'ask');
+        if (mode === 'auto' && channel === 'magnet_preview_prompt') {
+          const defPath = db.getSetting('defaultDownloadPath', path.join(app.getPath('home'), 'Downloads'));
+          engine.addTorrentOrMagnet(data.rawUri, defPath);
+          tray.notifyTorrentAdded(data.name || 'Magnet Torrent');
+          return;
+        } else {
+          tray.showWindow();
+        }
+      }
       mainWindow.webContents.send(channel, data);
     } else {
       // Running tray-only in auto mode — add silently
       if (channel === 'magnet_preview_prompt') {
         const defPath = db.getSetting('defaultDownloadPath', path.join(app.getPath('home'), 'Downloads'));
         engine.addTorrentOrMagnet(data.rawUri, defPath);
+        tray.notifyTorrentAdded(data.name || 'Magnet Torrent');
       }
     }
   });
@@ -185,8 +197,8 @@ app.whenReady().then(async () => {
       }
       if (channel === 'realtime_stats') {
         tray.updateStats(data);
-        if (tray.isTrayOnly && mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send('tray_only_mode', true);
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send('tray_only_mode', tray.isTrayOnly);
         }
       }
       if (channel === 'download_completed' && data && data.name) tray.notifyDownloadComplete(data.name);
@@ -353,6 +365,7 @@ ipcMain.handle('torrent:getCounters',    async () => tMgr.getCounters());
 
 // Settings
 ipcMain.handle('settings:get', async () => db.getAllSettings());
+ipcMain.handle('stats:getLifetime', async () => db.getLifetimeStats());
 ipcMain.handle('settings:save', async (_e, s) => {
   for (const [k, v] of Object.entries(s)) db.setSetting(k, v);
   if (s.globalDownloadLimitKB !== undefined || s.globalUploadLimitKB !== undefined) {

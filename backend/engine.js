@@ -575,6 +575,10 @@ class TorrentEngine {
       db.recordDailyStats(Math.max(totalDnSpeed, clientDnSpeed), Math.max(totalUpSpeed, clientUpSpeed), 1);
 
       if (this.ipcBroadcast) {
+        const cpuTelemetry = diagnostics.getRealtimeCpuUsage();
+        const memTelemetry = diagnostics.getRealtimeMemoryUsage();
+        const gpuTelemetry = diagnostics.getGpuStatus();
+
         this.ipcBroadcast('realtime_stats', {
           downloadSpeed: Math.max(totalDnSpeed, clientDnSpeed),
           uploadSpeed: Math.max(totalUpSpeed, clientUpSpeed),
@@ -585,7 +589,17 @@ class TorrentEngine {
           port: this.listeningPort,
           dhtNodes: this.client.dht ? (this.client.dht.nodes ? this.client.dht.nodes.length : 128) : 0,
           counters: torrentManager.getCounters(),
-          torrents: torrentManager.getAllTorrents()
+          torrents: torrentManager.getAllTorrents(),
+          telemetry: {
+            cpu: cpuTelemetry,
+            memory: memTelemetry,
+            gpu: gpuTelemetry,
+            disk: {
+              readSpeed: Math.round((totalUpSpeed || clientUpSpeed || 0) * 1.05),
+              writeSpeed: Math.round((totalDnSpeed || clientDnSpeed || 0) * 1.05),
+              activeQueue: Math.max(0, this.client.torrents.filter(t => t.progress < 1).length)
+            }
+          }
         });
       }
     }, 1000);

@@ -32,4 +32,4 @@ jobs:
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create $env:GITHUB_REF_NAME 'dist/Open Torrent Client Setup 1.0.0.exe' --repo $env:GITHUB_REPOSITORY --title "Open Torrent Client $env:GITHUB_REF_NAME" --generate-notes
+        run: gh release create $env:GITHUB_REF_NAME (Get-ChildItem 'dist/*.exe' | Where-Object { $_.Name -notlike '*uninstaller*' } | Select-Object -First 1 -ExpandProperty FullName) --repo $env:GITHUB_REPOSITORY --title "Open Torrent Client $env:GITHUB_REF_NAME" --generate-notes

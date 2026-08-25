@@ -190,3 +190,88 @@
 .terminal-input::placeholder {
   color: #475569;
 }
+
+/* ── Realtime System & Torrent Downloading Telemetry Grid ── */
+.terminal-telemetry-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px;
+  padding: 10px 12px;
+  background: #060b13;
+  border-bottom: 1px solid #1e293b;
+}
+
+.telemetry-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.telemetry-card-wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 960px) {
+  .telemetry-card-wide {
+    grid-column: span 1;
+  }
+}
+
+.telemetry-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.telemetry-val-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.badge-cpu { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+.badge-mem { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+.badge-disk { background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
+.badge-net { background: rgba(14, 165, 233, 0.2); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.4); }
+.badge-gpu { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+.telemetry-progress-bar {
+  height: 5px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+.telemetry-progress-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.fill-cpu { background: linear-gradient(90deg, #38bdf8, #818cf8); }
+.fill-mem { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+.fill-dl  { background: linear-gradient(90deg, #10b981, #06b6d4); }
+
+.telemetry-card-sub {
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.telemetry-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+}

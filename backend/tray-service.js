@@ -285,14 +285,23 @@ class TrayService {
 
     this.mainWindow.on('restore', () => {
       this.appState = AppState.READY;
+      if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+        this.mainWindow.webContents.send('tray_only_mode', false);
+      }
     });
 
     this.mainWindow.on('show', () => {
       this.appState = AppState.READY;
+      if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+        this.mainWindow.webContents.send('tray_only_mode', false);
+      }
     });
 
     this.mainWindow.on('hide', () => {
       this.appState = AppState.TRAY_ONLY;
+      if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+        this.mainWindow.webContents.send('tray_only_mode', true);
+      }
     });
 
     this.mainWindow.on('close', (event) => {
@@ -326,6 +335,9 @@ class TrayService {
     this.mainWindow.show();
     this.mainWindow.focus();
     this.appState = AppState.READY;
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      this.mainWindow.webContents.send('tray_only_mode', false);
+    }
     diagnostics.log('INFO', '[Tray] Window restored from tray.');
   }
 

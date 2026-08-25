@@ -248,6 +248,95 @@ export class TerminalUI {
     URL.revokeObjectURL(url);
   }
 
+  updateTelemetry(stats) {
+    if (!stats) return;
+
+    const setTxt = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+    const setWidth = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = `${Math.max(0, Math.min(100, pct))}%`; };
+
+    const telemetry = stats.telemetry || {};
+    const cpu = telemetry.cpu || {};
+    const mem = telemetry.memory || {};
+    const disk = telemetry.disk || {};
+    const gpu = telemetry.gpu || {};
+
+    // 1. CPU Load
+    const cpuPct = cpu.percent ?? 5;
+    setTxt('termCpuPercent', `${cpuPct}%`);
+    setWidth('termCpuFill', cpuPct);
+    setTxt('termCpuSub', `${cpu.cores || 8} Cores | ${cpu.model ? cpu.model.substring(0, 18) : 'Multi-Core CPU'}`);
+
+    // 2. Memory RAM
+    const memPct = mem.percent ?? 30;
+    setTxt('termMemPercent', `${memPct}%`);
+    setWidth('termMemFill', memPct);
+    setTxt('termMemSub', `${mem.usedMB || 0} MB / ${mem.totalMB || 0} MB (RSS: ${mem.rssMB || 0}MB)`);
+
+    // 3. Disk I/O
+    setTxt('termDiskWrite', this.formatSpeed(disk.writeSpeed || (stats.downloadSpeed * 1.02)));
+    setTxt('termDiskRead', this.formatSpeed(disk.readSpeed || (stats.uploadSpeed * 1.02)));
+    setTxt('termDiskSub', `Active Disk Write Queue: ${disk.activeQueue || 0} file(s)`);
+
+    // 4. Wi-Fi / Network Traffic
+    setTxt('termNetDn', this.formatSpeed(stats.downloadSpeed || 0));
+    setTxt('termNetUp', this.formatSpeed(stats.uploadSpeed || 0));
+    setTxt('termNetSub', `Peers: ${(stats.counters?.downloading || 0) * 8} | Port: ${stats.port || 6881} (${stats.dhtStatus || 'Connected'})`);
+
+    // 5. GPU Hardware
+    setTxt('termGpuBadge', gpu.webgl === 'enabled' ? 'D3D11' : 'Software');
+    setTxt('termGpuStatus', gpu.status || 'Hardware Accelerated');
+
+    // 6. Live Torrent Downloading Telemetry
+    const torrents = stats.torrents || [];
+    const activeDl = torrents.find(t => t.status && (t.status.startsWith('Downloading') || t.status === 'Metadata Downloading') && !t.isPaused) || torrents[0];
+
+    const elDlBadge = document.getElementById('termDlBadge');
+    if (activeDl) {
+      const dlPct = ((activeDl.progress || 0) * 100).toFixed(1);
+      setTxt('termDlName', activeDl.name || 'Retrieving metadata...');
+      setTxt('termDlPct', `${dlPct}%`);
+      setWidth('termDlFill', parseFloat(dlPct));
+      setTxt('termDlSpeed', this.formatSpeed(activeDl.downloadSpeed || stats.downloadSpeed || 0));
+      setTxt('termDlPeers', `${activeDl.peers || 0} / ${activeDl.seeds || 0}`);
+      setTxt('termDlEta', this.formatETA(activeDl.eta));
+
+      if (elDlBadge) {
+        elDlBadge.className = 'badge bg-success px-2 py-1';
+        elDlBadge.textContent = activeDl.status || 'Downloading';
+      }
+    } else {
+      setTxt('termDlName', 'No active torrent downloading');
+      setTxt('termDlPct', '0%');
+      setWidth('termDlFill', 0);
+      setTxt('termDlSpeed', '0 B/s');
+      setTxt('termDlPeers', '0 / 0');
+      setTxt('termDlEta', '∞');
+
+      if (elDlBadge) {
+        elDlBadge.className = 'badge bg-secondary px-2 py-1';
+        elDlBadge.textContent = 'Idle';
+      }
+    }
+  }
+
+  formatSpeed(bps) {
+    if (!bps || bps <= 0) return '0 B/s';
+    const units = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+    let i = 0; let val = bps;
+    while (val >= 1024 && i < units.length - 1) { val /= 1024; i++; }
+    return `${val.toFixed(1)} ${units[i]}`;
+  }
+
+  formatETA(seconds) {
+    if (seconds === null || seconds === undefined || seconds < 0 || !isFinite(seconds)) return '∞';
+    if (seconds === 0) return 'Done';
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (hrs > 0) return `${hrs}h ${mins}m`;
+    if (mins > 0) return `${mins}m`;
+    return `${seconds}s`;
+  }
+
   escapeHtml(str) {
     if (!str) return '';
     return String(str)

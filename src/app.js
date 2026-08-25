@@ -488,6 +488,11 @@ class AppController {
       }
       this.details.refreshDetails(activeHash);
     }
+
+    // Realtime Terminal Telemetry Dashboard
+    if (this.terminal && typeof this.terminal.updateTelemetry === 'function') {
+      this.terminal.updateTelemetry(stats);
+    }
   }
 
   async refreshTorrents() {

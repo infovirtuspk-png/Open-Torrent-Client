@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OPEN TORRENT CLIENT</title>
+  <title>OPEN TORRENT CLIENT by Engineer Qasim Ahmad</title>
   <link rel="stylesheet" href="vendor/bootstrap.min.css">
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/terminal.css">
@@ -191,10 +191,100 @@
                 </button>
               </div>
             </div>
+
+            <!-- Realtime System Performance & Torrent Downloading Telemetry Dashboard -->
+            <div class="terminal-telemetry-dashboard">
+              <!-- Card 1: CPU Realtime -->
+              <div class="telemetry-card">
+                <div class="telemetry-card-header">
+                  <span><i data-lucide="cpu" class="text-info"></i> CPU Load</span>
+                  <span class="telemetry-val-badge badge-cpu" id="termCpuPercent">0%</span>
+                </div>
+                <div class="telemetry-progress-bar">
+                  <div class="telemetry-progress-fill fill-cpu" id="termCpuFill" style="width: 0%"></div>
+                </div>
+                <div class="telemetry-card-sub" id="termCpuSub">Loading cores...</div>
+              </div>
+
+              <!-- Card 2: Memory Realtime -->
+              <div class="telemetry-card">
+                <div class="telemetry-card-header">
+                  <span><i data-lucide="hard-drive" class="text-warning"></i> RAM Memory</span>
+                  <span class="telemetry-val-badge badge-mem" id="termMemPercent">0%</span>
+                </div>
+                <div class="telemetry-progress-bar">
+                  <div class="telemetry-progress-fill fill-mem" id="termMemFill" style="width: 0%"></div>
+                </div>
+                <div class="telemetry-card-sub" id="termMemSub">0 MB / 0 MB</div>
+              </div>
+
+              <!-- Card 3: Disk Realtime -->
+              <div class="telemetry-card">
+                <div class="telemetry-card-header">
+                  <span><i data-lucide="database" class="text-success"></i> Disk I/O</span>
+                  <span class="telemetry-val-badge badge-disk" id="termDiskStatus">Active</span>
+                </div>
+                <div class="telemetry-metric-row">
+                  <span>Write: <strong id="termDiskWrite">0 B/s</strong></span>
+                  <span>Read: <strong id="termDiskRead">0 B/s</strong></span>
+                </div>
+                <div class="telemetry-card-sub" id="termDiskSub">Queue: 0 transfers</div>
+              </div>
+
+              <!-- Card 4: Wi-Fi / Network Realtime -->
+              <div class="telemetry-card">
+                <div class="telemetry-card-header">
+                  <span><i data-lucide="wifi" class="text-info"></i> Network Traffic</span>
+                  <span class="telemetry-val-badge badge-net" id="termNetStatus">Online</span>
+                </div>
+                <div class="telemetry-metric-row">
+                  <span class="text-info"><i data-lucide="arrow-down" style="width:11px;height:11px;"></i> <strong
+                      id="termNetDn">0 B/s</strong></span>
+                  <span class="text-success"><i data-lucide="arrow-up" style="width:11px;height:11px;"></i> <strong
+                      id="termNetUp">0 B/s</strong></span>
+                </div>
+                <div class="telemetry-card-sub" id="termNetSub">Peers: 0 | Swarm Active</div>
+              </div>
+
+              <!-- Card 5: GPU Acceleration Realtime -->
+              <div class="telemetry-card">
+                <div class="telemetry-card-header">
+                  <span><i data-lucide="zap" class="text-warning"></i> GPU Hardware</span>
+                  <span class="telemetry-val-badge badge-gpu" id="termGpuBadge">D3D11</span>
+                </div>
+                <div class="telemetry-card-sub" id="termGpuStatus" style="font-weight:600;color:#e2e8f0;">Hardware
+                  Accelerated</div>
+                <div class="telemetry-card-sub text-muted" id="termGpuSub">WebGL &amp; Compositing Active</div>
+              </div>
+
+              <!-- Card 6: Torrent Downloading Telemetry Realtime -->
+              <div class="telemetry-card telemetry-card-wide">
+                <div class="telemetry-card-header">
+                  <span><i data-lucide="download-cloud" class="text-info"></i> Downloading Telemetry</span>
+                  <span class="badge bg-primary px-2 py-1" id="termDlBadge">Idle</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between gap-2 my-1">
+                  <div class="text-truncate fw-bold text-light small" id="termDlName" style="max-width:320px;">No active
+                    torrent downloading</div>
+                  <div class="fw-bold text-info small" id="termDlPct">0%</div>
+                </div>
+                <div class="telemetry-progress-bar">
+                  <div class="telemetry-progress-fill fill-dl" id="termDlFill" style="width: 0%"></div>
+                </div>
+                <div class="telemetry-metric-row micro-text mt-1">
+                  <span>Speed: <strong class="text-info" id="termDlSpeed">0 B/s</strong></span>
+                  <span>Peers/Seeds: <strong id="termDlPeers">0 / 0</strong></span>
+                  <span>ETA: <strong id="termDlEta">&infin;</strong></span>
+                </div>
+              </div>
+            </div>
+
             <div class="terminal-viewport" id="terminalViewport"></div>
             <form class="terminal-input-bar" id="terminalInputForm">
               <span class="terminal-prompt-symbol">otc-cli&gt;</span>
-              <input type="text" class="terminal-input" id="terminalInput" placeholder="Type command here... ('help' for available commands, 'exec <cmd>' for shell commands)" autocomplete="off" spellcheck="false">
+              <input type="text" class="terminal-input" id="terminalInput"
+                placeholder="Type command here... ('help' for available commands, 'exec <cmd>' for shell commands)"
+                autocomplete="off" spellcheck="false">
             </form>
           </div>
         </section>
@@ -351,8 +441,10 @@
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <span class="text-muted small">BitTorrent Announce Trackers & HTTP WebSeeds</span>
                   <div class="d-flex gap-2">
-                    <button class="btn-otc btn-otc-sm" id="btnInspectorAddTracker" title="Add Custom Tracker URL"><i data-lucide="plus-circle"></i> Add Tracker</button>
-                    <button class="btn-otc btn-otc-sm" id="btnInspectorAddWebSeed" title="Add WebSeed Mirror URL"><i data-lucide="globe"></i> Add WebSeed</button>
+                    <button class="btn-otc btn-otc-sm" id="btnInspectorAddTracker" title="Add Custom Tracker URL"><i
+                        data-lucide="plus-circle"></i> Add Tracker</button>
+                    <button class="btn-otc btn-otc-sm" id="btnInspectorAddWebSeed" title="Add WebSeed Mirror URL"><i
+                        data-lucide="globe"></i> Add WebSeed</button>
                   </div>
                 </div>
                 <div class="w-100 table-responsive">
@@ -482,7 +574,8 @@
                 </div>
                 <div>
                   <h5 class="mb-0 font-weight-bold text-white">Application Settings</h5>
-                  <span class="text-muted small">Customize client preferences, bandwidth limits &amp; integrations</span>
+                  <span class="text-muted small">Customize client preferences, bandwidth limits &amp;
+                    integrations</span>
                 </div>
               </div>
               <!-- Tabbed Sub-Navigation -->
@@ -516,7 +609,8 @@
                           <h6 class="settings-card-title">
                             <i data-lucide="monitor" style="width:18px;height:18px;"></i> System Tray &amp; Window
                           </h6>
-                          <span class="badge px-2 py-1" style="background:rgba(16,185,129,0.2);color:#10b981;">● Tray Active</span>
+                          <span class="badge px-2 py-1" style="background:rgba(16,185,129,0.2);color:#10b981;">● Tray
+                            Active</span>
                         </div>
                         <div class="settings-row">
                           <div class="settings-row-info">
@@ -530,7 +624,8 @@
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Close button minimizes to tray</span>
-                            <span class="settings-row-desc">Keep background downloads active when clicking close [X]</span>
+                            <span class="settings-row-desc">Keep background downloads active when clicking close
+                              [X]</span>
                           </div>
                           <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="setCloseToTray">
@@ -539,7 +634,8 @@
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Show "still running in tray" notification</span>
-                            <span class="settings-row-desc">Display a toast message when app is minimized to system tray</span>
+                            <span class="settings-row-desc">Display a toast message when app is minimized to system
+                              tray</span>
                           </div>
                           <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="setShowCloseToTrayNotif">
@@ -548,16 +644,19 @@
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Detect magnet links from clipboard</span>
-                            <span class="settings-row-desc">Automatically prompt when a magnet URL is copied to clipboard</span>
+                            <span class="settings-row-desc">Automatically prompt when a magnet URL is copied to
+                              clipboard</span>
                           </div>
                           <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="setDetectClipboard">
                           </div>
                         </div>
-                        <div class="mt-3 pt-2 border-top border-secondary d-flex align-items-center justify-content-between">
+                        <div
+                          class="mt-3 pt-2 border-top border-secondary d-flex align-items-center justify-content-between">
                           <div>
                             <label class="form-label small mb-1 fw-bold text-light">Theme Appearance</label>
-                            <select class="form-select bg-dark text-light border-secondary form-select-sm" id="setTheme" style="width:160px;">
+                            <select class="form-select bg-dark text-light border-secondary form-select-sm" id="setTheme"
+                              style="width:160px;">
                               <option value="dark">Dark Theme (Default)</option>
                               <option value="light">Light Theme</option>
                             </select>
@@ -607,7 +706,8 @@
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Restore torrent states on startup</span>
-                            <span class="settings-row-desc">Automatically resume previous download queues and seeding tasks</span>
+                            <span class="settings-row-desc">Automatically resume previous download queues and seeding
+                              tasks</span>
                           </div>
                           <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="setRestoreStates">
@@ -646,9 +746,11 @@
                         <div class="mb-2">
                           <label class="form-label small fw-bold text-light">Max Concurrent Active Downloads</label>
                           <div class="input-group input-group-sm">
-                            <input type="number" class="form-input w-100" id="setMaxActiveDn" value="3" min="1" max="20">
+                            <input type="number" class="form-input w-100" id="setMaxActiveDn" value="3" min="1"
+                              max="20">
                           </div>
-                          <span class="text-muted micro-text">Queue manager pauses downloads exceeding this limit.</span>
+                          <span class="text-muted micro-text">Queue manager pauses downloads exceeding this
+                            limit.</span>
                         </div>
                       </div>
                     </div>
@@ -658,14 +760,18 @@
                       <div class="settings-card">
                         <div class="settings-card-header">
                           <h6 class="settings-card-title">
-                            <i data-lucide="wifi" style="width:18px;height:18px;"></i> Port &amp; Connectivity Diagnostic
+                            <i data-lucide="wifi" style="width:18px;height:18px;"></i> Port &amp; Connectivity
+                            Diagnostic
                           </h6>
                         </div>
                         <p class="text-muted small mb-3">
-                          Test listening BitTorrent TCP/UDP ports, active local network interfaces, and DHT tracker reachability.
+                          Test listening BitTorrent TCP/UDP ports, active local network interfaces, and DHT tracker
+                          reachability.
                         </p>
-                        <button type="button" class="btn-otc btn-otc-primary w-100 py-2" id="btnTestNetworkConnectivity">
-                          <i data-lucide="wifi" style="width:16px;height:16px;"></i> Test Network &amp; Port Connectivity
+                        <button type="button" class="btn-otc btn-otc-primary w-100 py-2"
+                          id="btnTestNetworkConnectivity">
+                          <i data-lucide="wifi" style="width:16px;height:16px;"></i> Test Network &amp; Port
+                          Connectivity
                         </button>
                       </div>
                     </div>
@@ -688,27 +794,33 @@
                         </div>
                         <div class="settings-row">
                           <span class="settings-row-label">Torrent Added</span>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifAdded"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setNotifAdded"></div>
                         </div>
                         <div class="settings-row">
                           <span class="settings-row-label">Download Completed</span>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifComplete"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setNotifComplete"></div>
                         </div>
                         <div class="settings-row">
                           <span class="settings-row-label">Torrent Errors</span>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifError"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setNotifError"></div>
                         </div>
                         <div class="settings-row">
                           <span class="settings-row-label">Metadata Received</span>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifMeta"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setNotifMeta"></div>
                         </div>
                         <div class="settings-row">
                           <span class="settings-row-label">Tracker Connection Errors</span>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifTracker"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setNotifTracker"></div>
                         </div>
                         <div class="settings-row">
                           <span class="settings-row-label">Seeding Started</span>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setNotifSeeding"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setNotifSeeding"></div>
                         </div>
                       </div>
                     </div>
@@ -724,23 +836,29 @@
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Prevent system sleep while downloading</span>
-                            <span class="settings-row-desc">Acquire Windows power save blocker during active transfers</span>
+                            <span class="settings-row-desc">Acquire Windows power save blocker during active
+                              transfers</span>
                           </div>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setPrevSleepDn"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setPrevSleepDn"></div>
                         </div>
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Prevent system sleep while seeding</span>
-                            <span class="settings-row-desc">Keep computer awake when actively seeding completed torrents</span>
+                            <span class="settings-row-desc">Keep computer awake when actively seeding completed
+                              torrents</span>
                           </div>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setPrevSleepSeed"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setPrevSleepSeed"></div>
                         </div>
                         <div class="settings-row">
                           <div class="settings-row-info">
                             <span class="settings-row-label">Pause downloads on metered connections</span>
-                            <span class="settings-row-desc">Prevent data overage charges on cellular or limited networks</span>
+                            <span class="settings-row-desc">Prevent data overage charges on cellular or limited
+                              networks</span>
                           </div>
-                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="setPauseMetered"></div>
+                          <div class="form-check form-switch"><input class="form-check-input" type="checkbox"
+                              id="setPauseMetered"></div>
                         </div>
                       </div>
                     </div>
@@ -755,48 +873,58 @@
                       <div class="settings-card">
                         <div class="settings-card-header">
                           <h6 class="settings-card-title">
-                            <i data-lucide="link" style="width:18px;height:18px;"></i> Browser &amp; Windows Protocol Integration
+                            <i data-lucide="link" style="width:18px;height:18px;"></i> Browser &amp; Windows Protocol
+                            Integration
                           </h6>
                           <span id="badgeMagnetRegStatus" class="badge bg-success px-3 py-1">● Magnet: Registered</span>
                         </div>
-                        
+
                         <div class="row g-3 mb-3">
                           <div class="col-md-4">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
+                            <div
+                              class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
                               <span class="text-muted">Windows Protocol (`magnet:`):</span>
                               <strong id="statusMagnetProtoText" class="text-success fs-6">Active (HKCU)</strong>
                             </div>
                           </div>
                           <div class="col-md-4">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
+                            <div
+                              class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
                               <span class="text-muted">File Association (`.torrent`):</span>
                               <strong id="statusTorrentAssocText" class="text-success fs-6">Active (HKCU)</strong>
                             </div>
                           </div>
                           <div class="col-md-4">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
+                            <div
+                              class="p-2 bg-dark rounded border border-secondary text-light small d-flex flex-column gap-1">
                               <span class="text-muted">Single Instance Service:</span>
                               <strong class="text-info fs-6">Active (IPC Lock)</strong>
                             </div>
                           </div>
                         </div>
 
-                        <label class="form-label small fw-bold text-light mb-2">Magnet Link Capture Behavior Mode</label>
+                        <label class="form-label small fw-bold text-light mb-2">Magnet Link Capture Behavior
+                          Mode</label>
                         <div class="d-flex flex-column gap-2 mb-3">
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAsk" value="ask">
+                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAsk"
+                              value="ask">
                             <label class="form-check-label small" for="modeAsk">
-                              <strong>Mode A &mdash; Ask Before Adding</strong> <span class="text-muted">(Shows preview dialog with file tree)</span>
+                              <strong>Mode A &mdash; Ask Before Adding</strong> <span class="text-muted">(Shows preview
+                                dialog with file tree)</span>
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAuto" value="auto">
+                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAuto"
+                              value="auto">
                             <label class="form-check-label small" for="modeAuto">
-                              <strong>Mode B &mdash; Auto Add</strong> <span class="text-muted">(Starts transfer silently in background)</span>
+                              <strong>Mode B &mdash; Auto Add</strong> <span class="text-muted">(Starts transfer
+                                silently in background)</span>
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAskNew" value="ask_new">
+                            <input class="form-check-input" type="radio" name="radioCaptureMode" id="modeAskNew"
+                              value="ask_new">
                             <label class="form-check-label small" for="modeAskNew">
                               <strong>Mode C &mdash; Ask Only for New Torrents</strong>
                             </label>
@@ -814,7 +942,9 @@
                             <i data-lucide="x-circle" style="width:14px;height:14px;"></i> Reset Protocol Handler
                           </button>
                         </div>
-                        <div id="integrationTestReport" class="mt-3 p-3 bg-dark rounded small text-info border border-secondary" style="display:none;"></div>
+                        <div id="integrationTestReport"
+                          class="mt-3 p-3 bg-dark rounded small text-info border border-secondary"
+                          style="display:none;"></div>
                       </div>
                     </div>
                   </div>
@@ -849,7 +979,8 @@
                 <span class="badge bg-success px-3 py-1 rounded-pill">● Production Release</span>
               </div>
               <p class="text-secondary mx-auto" style="max-width: 620px; font-size: 0.92rem;">
-                Standalone Windows BitTorrent Desktop Client featuring real WebTorrent engine integration, Magnet Link capture, SQLite database persistence, live 7-tab inspector, and zero fake statistics.
+                Standalone Windows BitTorrent Desktop Client featuring real WebTorrent engine integration, Magnet Link
+                capture, SQLite database persistence, live 7-tab inspector, and zero fake statistics.
               </p>
 
               <!-- Action Buttons -->
@@ -863,12 +994,18 @@
               </div>
 
               <!-- Tech Stack Badges -->
-              <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-4 pt-3 border-top border-secondary">
-                <span class="tech-badge"><i data-lucide="cpu" style="width:13px;height:13px;" class="text-info"></i> Electron 28</span>
-                <span class="tech-badge"><i data-lucide="zap" style="width:13px;height:13px;" class="text-warning"></i> WebTorrent Engine</span>
-                <span class="tech-badge"><i data-lucide="database" style="width:13px;height:13px;" class="text-success"></i> SQLite 3 WAL</span>
-                <span class="tech-badge"><i data-lucide="globe" style="width:13px;height:13px;" class="text-info"></i> DHT + PEX Network</span>
-                <span class="tech-badge"><i data-lucide="shield-check" style="width:13px;height:13px;" class="text-success"></i> Windows Protocol Integration</span>
+              <div
+                class="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-4 pt-3 border-top border-secondary">
+                <span class="tech-badge"><i data-lucide="cpu" style="width:13px;height:13px;" class="text-info"></i>
+                  Electron 28</span>
+                <span class="tech-badge"><i data-lucide="zap" style="width:13px;height:13px;" class="text-warning"></i>
+                  WebTorrent Engine</span>
+                <span class="tech-badge"><i data-lucide="database" style="width:13px;height:13px;"
+                    class="text-success"></i> SQLite 3 WAL</span>
+                <span class="tech-badge"><i data-lucide="globe" style="width:13px;height:13px;" class="text-info"></i>
+                  DHT + PEX Network</span>
+                <span class="tech-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"
+                    class="text-success"></i> Windows Protocol Integration</span>
               </div>
             </div>
 
@@ -882,15 +1019,18 @@
                   <div>
                     <div class="d-flex align-items-center gap-2 flex-wrap">
                       <h5 class="font-weight-bold text-white mb-0">Engineer Qasim Ahmad</h5>
-                      <span class="badge bg-info text-dark px-2 py-1 small font-weight-bold">Lead Developer &amp; Architect</span>
+                      <span class="badge bg-info text-dark px-2 py-1 small font-weight-bold">Lead Developer &amp;
+                        Architect</span>
                     </div>
                     <p class="text-secondary small mb-0 mt-1">
-                      <i data-lucide="code-2" style="width:14px;height:14px;" class="me-1 text-info"></i> Software Engineer &bull; Desktop Application Systems
+                      <i data-lucide="code-2" style="width:14px;height:14px;" class="me-1 text-info"></i> Software
+                      Engineer &bull; Desktop Application Systems
                     </p>
                   </div>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <a href="mailto:engineerqasimahmad@gmail.com" class="btn-otc btn-otc-primary px-3 py-2 text-decoration-none">
+                  <a href="mailto:engineerqasimahmad@gmail.com"
+                    class="btn-otc btn-otc-primary px-3 py-2 text-decoration-none">
                     <i data-lucide="mail" style="width:15px;height:15px;" class="me-1"></i> engineerqasimahmad@gmail.com
                   </a>
                 </div>
@@ -905,7 +1045,8 @@
                     <i data-lucide="activity" style="width:20px;height:20px;"></i>
                     <strong style="font-size: 0.95rem;">Realtime Bitfield Inspector</strong>
                   </div>
-                  <p class="text-secondary small mb-0">Live canvas piece visualization mapping completed, downloading, and missing piece blocks directly from wire streams.</p>
+                  <p class="text-secondary small mb-0">Live canvas piece visualization mapping completed, downloading,
+                    and missing piece blocks directly from wire streams.</p>
                 </div>
               </div>
               <div class="col-md-4">
@@ -914,7 +1055,8 @@
                     <i data-lucide="link" style="width:20px;height:20px;"></i>
                     <strong style="font-size: 0.95rem;">Magnet Protocol Capture</strong>
                   </div>
-                  <p class="text-secondary small mb-0">Automatic Windows `magnet:` protocol registration, single-instance argument lock, and clipboard watcher.</p>
+                  <p class="text-secondary small mb-0">Automatic Windows `magnet:` protocol registration,
+                    single-instance argument lock, and clipboard watcher.</p>
                 </div>
               </div>
               <div class="col-md-4">
@@ -923,7 +1065,8 @@
                     <i data-lucide="monitor" style="width:20px;height:20px;"></i>
                     <strong style="font-size: 0.95rem;">System Tray Engine</strong>
                   </div>
-                  <p class="text-secondary small mb-0">State-aware notification area tray icons, minimize-to-tray, close-to-tray, and native OS notifications.</p>
+                  <p class="text-secondary small mb-0">State-aware notification area tray icons, minimize-to-tray,
+                    close-to-tray, and native OS notifications.</p>
                 </div>
               </div>
               <div class="col-md-4">
@@ -932,7 +1075,8 @@
                     <i data-lucide="sliders" style="width:20px;height:20px;"></i>
                     <strong style="font-size: 0.95rem;">Queue &amp; Bandwidth Rules</strong>
                   </div>
-                  <p class="text-secondary small mb-0">Per-torrent download/upload speed limits, file priority controls, and daily usage statistics logging.</p>
+                  <p class="text-secondary small mb-0">Per-torrent download/upload speed limits, file priority controls,
+                    and daily usage statistics logging.</p>
                 </div>
               </div>
               <div class="col-md-4">
@@ -941,7 +1085,8 @@
                     <i data-lucide="shield" style="width:20px;height:20px;"></i>
                     <strong style="font-size: 0.95rem;">Filesystem Protection</strong>
                   </div>
-                  <p class="text-secondary small mb-0">Path traversal guards, auto folder creation, and safe multi-file deletion confirmation dialogs.</p>
+                  <p class="text-secondary small mb-0">Path traversal guards, auto folder creation, and safe multi-file
+                    deletion confirmation dialogs.</p>
                 </div>
               </div>
               <div class="col-md-4">
@@ -950,7 +1095,8 @@
                     <i data-lucide="rotate-ccw" style="width:20px;height:20px;"></i>
                     <strong style="font-size: 0.95rem;">Auto Resume &amp; Recovery</strong>
                   </div>
-                  <p class="text-secondary small mb-0">Automatic session restoration on startup and transaction-safe SQLite database crash protection.</p>
+                  <p class="text-secondary small mb-0">Automatic session restoration on startup and transaction-safe
+                    SQLite database crash protection.</p>
                 </div>
               </div>
             </div>
@@ -958,7 +1104,8 @@
             <!-- System Information & License -->
             <div class="card bg-secondary border-secondary p-3 text-center text-muted small mb-3">
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <span>© 2026 Open Torrent Client Project. Developed by <strong>Engineer Qasim Ahmad</strong> (&lt;engineerqasimahmad@gmail.com&gt;). Released under MIT License.</span>
+                <span>© 2026 Open Torrent Client Project. Developed by <strong>Engineer Qasim Ahmad</strong>
+                  (&lt;engineerqasimahmad@gmail.com&gt;). Released under MIT License.</span>
                 <span>BitTorrent &amp; Magnet Specification Compliant</span>
               </div>
             </div>
@@ -1013,7 +1160,8 @@
           <label class="text-muted small text-uppercase font-weight-bold mb-1">Torrent Display Name</label>
           <div class="h6 font-weight-bold text-white mb-1" id="previewMagnetName">Ubuntu 24.04 Desktop</div>
           <div class="d-flex justify-content-between align-items-center mt-2">
-            <span class="text-muted small">Info Hash: <strong id="previewMagnetHash" class="text-info font-monospace">abcd1234...</strong></span>
+            <span class="text-muted small">Info Hash: <strong id="previewMagnetHash"
+                class="text-info font-monospace">abcd1234...</strong></span>
             <span class="badge bg-dark text-info px-2 py-1" id="previewMagnetTrackers">Trackers: 4</span>
           </div>
         </div>
@@ -1035,7 +1183,8 @@
         <!-- Inputs -->
         <div class="form-group mb-3">
           <label class="form-label small">Magnet URI</label>
-          <textarea class="form-input font-monospace small" id="inputMagnetUri" rows="2" placeholder="magnet:?xt=urn:btih:..."></textarea>
+          <textarea class="form-input font-monospace small" id="inputMagnetUri" rows="2"
+            placeholder="magnet:?xt=urn:btih:..."></textarea>
         </div>
 
         <div class="form-group mb-2">

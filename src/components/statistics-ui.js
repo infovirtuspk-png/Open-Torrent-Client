@@ -1,15 +1,16 @@
 export class StatisticsUI {
   async loadStatistics() {
     const diag = await window.api.getDiagnostics();
+    const lifetime = window.api.getLifetimeStats ? await window.api.getLifetimeStats() : null;
     if (!diag) return;
 
     const elDn = document.getElementById('statLifetimeDn');
     const elUp = document.getElementById('statLifetimeUp');
     const elDays = document.getElementById('statActiveDays');
 
-    if (elDn) elDn.textContent = this.formatBytes(diag.totalMemoryMB * 1024 * 1024 * 3);
-    if (elUp) elUp.textContent = this.formatBytes(diag.totalMemoryMB * 1024 * 512);
-    if (elDays) elDays.textContent = '1 Active Day';
+    if (elDn) elDn.textContent = this.formatBytes(lifetime?.totalDownloaded || 0);
+    if (elUp) elUp.textContent = this.formatBytes(lifetime?.totalUploaded || 0);
+    if (elDays) elDays.textContent = `${lifetime?.activeDays || 1} Active Day${(lifetime?.activeDays || 1) === 1 ? '' : 's'}`;
   }
 
   formatBytes(bytes) {

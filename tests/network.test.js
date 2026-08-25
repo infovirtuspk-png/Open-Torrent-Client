@@ -93,6 +93,44 @@ function runNetworkTests() {
   }
   console.log('✔ Realtime Tray Stats & Live Tooltip update passed.');
 
+  // 8. Background Tray Status & Lifetime Stats query
+  console.log('Testing Background Tray Status & Lifetime Stats query...');
+  if (typeof trayService.isTrayOnly !== 'boolean') {
+    throw new Error('TrayService.isTrayOnly should return a boolean state.');
+  }
+  const db = require('../database/db');
+  if (typeof db.getLifetimeStats !== 'function') {
+    throw new Error('db.getLifetimeStats should be a function.');
+  }
+  console.log('✔ Background Tray Status & Lifetime Stats query passed.');
+
+  // 9. Realtime System Telemetry — CPU, Memory, GPU
+  console.log('Testing Realtime CPU, Memory & GPU telemetry methods...');
+  const cpuResult = diagnostics.getRealtimeCpuUsage();
+  if (typeof cpuResult.percent !== 'number' || cpuResult.percent < 0 || cpuResult.percent > 100) {
+    throw new Error(`getRealtimeCpuUsage: unexpected cpu percent value: ${cpuResult.percent}`);
+  }
+  if (typeof cpuResult.cores !== 'number' || cpuResult.cores < 1) {
+    throw new Error(`getRealtimeCpuUsage: expected at least 1 CPU core, got: ${cpuResult.cores}`);
+  }
+
+  const memResult = diagnostics.getRealtimeMemoryUsage();
+  if (typeof memResult.totalMB !== 'number' || memResult.totalMB <= 0) {
+    throw new Error(`getRealtimeMemoryUsage: unexpected totalMB: ${memResult.totalMB}`);
+  }
+  if (typeof memResult.percent !== 'number' || memResult.percent < 0 || memResult.percent > 100) {
+    throw new Error(`getRealtimeMemoryUsage: unexpected memory percent: ${memResult.percent}`);
+  }
+  if (memResult.usedMB > memResult.totalMB) {
+    throw new Error(`getRealtimeMemoryUsage: usedMB (${memResult.usedMB}) exceeds totalMB (${memResult.totalMB})`);
+  }
+
+  const gpuResult = diagnostics.getGpuStatus();
+  if (typeof gpuResult.status !== 'string' || gpuResult.status.length === 0) {
+    throw new Error(`getGpuStatus: expected a non-empty status string, got: ${gpuResult.status}`);
+  }
+  console.log('✔ Realtime CPU, Memory & GPU telemetry methods passed.');
+
   console.log('=== All Network Unit Tests Passed Successfully! ===\n');
 }
 
